@@ -100,6 +100,18 @@ if (year = 2024) { // если минут будет меньше 10,
   year = 24;  
 };
 
+const likeCenter = document.querySelectorAll(".like-button");
+
+const initEventLike = () => {
+  const likesCenter = document.querySelectorAll(".like-button");
+  for (const likeCenter of likesCenter) {
+    likeCenter.addEventListener("click", () => {
+      console.log(1);
+    });
+  }
+};
+initEventLike();
+
       const oldListHtml = listElement.innerHTML;
       listElement.innerHTML =
         oldListHtml +
