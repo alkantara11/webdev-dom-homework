@@ -17,7 +17,7 @@
           class="add-form-name"
           placeholder="Введите ваше имя"
         />
-        <textarea
+        <textarea id="textarea"
           type="textarea" id="addText"
           class="add-form-text"
           placeholder="Введите ваш коментарий"
@@ -55,12 +55,12 @@
             comments[index].isLike = true; 
             comments[index].like++; 
             likeButton.classList.add('liked');
+            comments[index].paint = '-active-like';
         } 
-        if (comments[index].isLike === true) {
 
-        }
         else { 
             comments[index].isLike = false; 
+            comments[index].paint = '';
             comments[index].like--; 
             likeButton.classList.remove('liked');
       }
@@ -88,10 +88,10 @@
         isLike: true,  
       }
     ]
-    
+
     const renderComments = () => {
     const commentsHtml = comments.map((comment, index) => {
-      return `<li class="comment">
+      return `<li data-index="${index}" class="comment">
           <div class="comment-header">
             <div>${comment.name}</div>
             <div>${comment.time}</div>
@@ -114,8 +114,9 @@
         </li>`
     }).join('');
     listElement.innerHTML = commentsHtml;
+    likeButton.classList.add('liked');
     likesButtonListeners();
-   };
+};
    renderComments();
 
     buttonElement.addEventListener('click', () => {
@@ -140,14 +141,39 @@
       ${hours}:${minutes}`;
 
       comments.push({
-        name: addNameElement.value,
+        name: addNameElement.value
+        .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;"),
         time: newDate,
-        comment: addTextElement.value,
+        comment: addTextElement.value
+        .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;"),
         like: 0, 
         isLike: false,
       });
       renderComments();
+      
     });
+    function answerComment() {
+  const oldComments = document.querySelectorAll('.comments');
+
+  for (const oldComment of oldComments) {
+    oldComment.addEventListener('click', (event) =>{
+      event.stopPropagation();
+
+      const index = oldComment.dataset.index;
+      const comment = comments[index];
+
+      addTextElement.value = `%BEGIN_QUOTE${comments[index].name}
+      ${comment.comment}END_QUOTE%`
+    })
+  }
+}
+answerComment()
     console.log("It works!");
   </script>
 </html>
